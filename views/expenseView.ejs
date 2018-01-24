@@ -1,0 +1,361 @@
+<% include header %>
+
+<% include accounts %>
+
+
+  <div class="container">
+    <div id="test1">
+    <div class="row chart-wrapper">
+      <div class="col s6 m4">
+        <div class="card-panel">
+          <div class="card-image">
+            <h4> EXPENSES </h4>
+            <div>
+              <h3> <span class="expenseCard"> 4000 &#8377;</span>
+                  <i class="material-icons deep-orange-text text-accent-2">arrow_upward</i>
+                </h3>
+            </div>
+          </div>
+
+          <div class="input-field col s8">
+            <select id="card-select">
+                    <option value="" disabled selected>Filter By Month</option>
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                  </select>
+          </div>
+          <span class="white-text">
+               Total Expenses for this month
+             </span>
+        </div>
+      </div>
+
+
+    </div>
+
+<div class="row">
+    <div>
+      <div id="example"></div>
+    </div>
+<div class="card">
+
+          <div class=" card table-filter">
+              <div class="input-field col s3">
+
+                <i class="material-icons prefix">event</i>
+                <input id="startdate" name="startdate" type="text" class="datepicker">
+                <label for="startdate">Start Date</label>
+              </div>
+              <div class="input-field col s3">
+
+                <i class="material-icons prefix">event</i>
+                <input id="enddate" name="enddate" type="text" class="datepicker">
+                <label for="enddate">End Date</label>
+              </div>
+
+              <button  onclick ="searchMonthExpenses(this)" class="btn-floating btn-small blue">
+                 <i class="small material-icons">search</i>
+               </button>
+               <button   onclick ="exportToExcel()" class="btn-floating btn-small blue">
+                  <i class="small material-icons">import_export</i>
+                </button>
+          </div>
+
+    <table id="page-table" class="highlight bordered centered responsive-table">
+      <thead>
+        <tr>
+          <th> <i class="material-icons prefix noExl">date_range</i> <span> &nbsp;Date  </span> </div></th>
+          <th> <i class="material-icons prefix noExl">style</i><span> &nbsp;Expense type </span></th>
+          <th> <i class="material-icons prefix noExl">attach_money</i><span> Amount </span></th>
+          <th> <i class="material-icons prefix noExl">local_shipping</i><span> &nbsp;Vendor </span></th>
+          <th> <i class="material-icons prefix noExl">description</i><span> &nbsp;Notes</span> </th>
+          <th> <i class="material-icons prefix noExl">speaker_notes</i><span> &nbsp;Actions </span></th>
+        </tr>
+  </thead>
+
+  <tbody>
+
+
+    <% expenseList.forEach(function(expense){
+        if(expense.type != "Weaving"){
+      %>
+      <tr>
+        <td>
+          <%= expense.date %>
+        </td>
+        <td>
+          <%= expense.type %>
+        </td>
+        <td>
+          <%= expense.amount %>
+        </td>
+        <td>
+          <%= expense.vendor %>
+        </td>
+        <td>
+          <%= expense.notes %>
+        </td>
+        <td class="noExl document-id">
+          <%= expense._id%>
+        </td>
+        <td class="noExl" onclick="editExpenses(this)">
+          <button class="btn-floating btn-small blue">
+             <i class="small material-icons">mode_edit</i>
+           </a>
+        </td>
+      </tr>
+      <% } })%>
+
+
+
+  </tbody>
+  </table>
+
+</div>
+
+</div>
+
+  <!-- Modal Trigger -->
+  <a class="btn-floating waves-effect btn-large waves-light btn modal-trigger  red addButton" href="#modal1"><i class=" material-icons icon-size">add</i></a>
+
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal modal-fixed-footer">
+    <form class="col s12" action="/addExpense" method="POST">
+      <div class="modal-content">
+        <h4>Add an Expense</h4>
+        <div class="row">
+          <div class="row">
+            <div class="input-field col s6">
+              <i class="material-icons prefix">date_range</i>
+              <input id="date" name="date" type="text" class="datepicker">
+              <label for="date">Date</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">style</i>
+              <select id="type" name="type">
+                  <option value="" disabled selected>Choose your option</option>
+
+                  <% typeOfExpenses.forEach(function(type){%>
+                      <option value= <%= type %> > <%= type %></option>
+                    <%})%>
+
+                </select>
+              <label for="type">Type of Expense</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">attach_money</i>
+              <input id="amount" required minlength="1" name="amount" type="text" class="validate">
+              <label for="amount">Amount</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">business_center</i>
+              <select id="vendor" name="vendor">
+                   <option value="" disabled selected>Choose your option</option>
+
+                   <% listOfVendors.forEach(function(vendors){%>
+                       <option value= <%= vendors %> > <%= vendors %></option>
+                     <%})%>
+
+                 </select>
+              <label for="vendor">Vendor</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">Reference</i>
+              <input id="ref" name="ref" type="text" class="validate">
+              <label for="ref">Reference</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">description</i>
+              <input id="notes" name="notes" type="text" class="validate">
+              <label for="notes">Notes</label>
+            </div>
+
+          </div>
+        </div>
+
+
+
+      </div>
+      <div class="modal-footer">
+        <a id="cancelId" class="modal-action modal-close waves-effect waves-green btn-flat">cancel</a>
+        <button type="submit" id="vendorId" class="modal-action modal-close waves-effect waves-green btn-flat">Add Expense</button>
+          </div>
+          </form>
+
+          </div>
+
+
+
+          <!-- Update view -->
+          <!-- Modal Structure -->
+          <div id="modal2" class="modal modal-fixed-footer">
+            <form class="col s12">
+              <div class="modal-content">
+                <h4>Update an Expense</h4>
+                <div class="row">
+                  <div class="row">
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix">date_range</i>
+                      <input disabled value="I am not editable" id="newdate" name="date" type="text">
+                      <label for="newdate">Date</label>
+                    </div>
+                    <div class="input-field col s6" id="newtype">
+                      <i class="material-icons prefix">style</i>
+                      <select name="type">
+                <option value="" disabled selected>Choose your option</option>
+
+                <% typeOfExpenses.forEach(function(type){%>
+                    <option value= <%= type %> > <%= type %></option>
+                  <%})%>
+
+              </select>
+                      <label for="type">Type of Expense</label>
+                    </div>
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix">attach_money</i>
+                      <input id="newamount" placeholder="Placeholder" required minlength="1" name="amount" type="text" class="validate">
+                      <label for="newamount">Amount</label>
+                    </div>
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix">business_center</i>
+                      <select id="newvendor" name="newvendor">
+                 <option value="" disabled selected>Choose your option</option>
+
+                 <% listOfVendors.forEach(function(vendors){%>
+                     <option value= <%= vendors %> > <%= vendors %></option>
+                   <%})%>
+
+               </select>
+                      <label for="newvendor">Vendor</label>
+                    </div>
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix">Reference</i>
+                      <input id="newref" placeholder="Placeholder" name="ref" type="text" class="validate">
+                      <label for="newref">Reference</label>
+                    </div>
+                    <div class="input-field col s6">
+                      <i class="material-icons prefix">description</i>
+                      <input id="newnotes" placeholder="Placeholder" name="notes" type="text" class="validate">
+                      <label for="newnotes">Notes</label>
+                    </div>
+
+                    <div class="document-id">
+                      <span id="documentId" />
+                    </div>
+
+                  </div>
+                </div>
+
+
+
+              </div>
+              <div class="modal-footer">
+                <a id="cancelId2" class="modal-action modal-close waves-effect waves-green btn-flat">cancel</a>
+                <button type="button" onclick="updateExpense(this)" id="vendorId" class="modal-action modal-close waves-effect waves-green btn-flat">Update Expense</button>
+                <button type="button" id="deleteVendor" onclick="deleteExpense(this)" class="modal-action modal-close waves-effect waves-green btn-flat">Delete Expense</button>
+
+              </div>
+            </form>
+
+          </div>
+
+
+
+          </div>
+
+          <div id="test3">
+            <div class="row">
+                <div>
+                  <div id="example"></div>
+                </div>
+            <div class="card">
+
+                      <div class=" card table-filter">
+                          <div class="input-field col s3">
+
+                            <i class="material-icons prefix">event</i>
+                            <input id="startdate" name="startdate" type="text" class="datepicker">
+                            <label for="startdate">Start Date</label>
+                          </div>
+                          <div class="input-field col s3">
+
+                            <i class="material-icons prefix">event</i>
+                            <input id="enddate" name="enddate" type="text" class="datepicker">
+                            <label for="enddate">End Date</label>
+                          </div>
+
+                          <button  onclick ="searchMonthExpenses(this)" class="btn-floating btn-small blue">
+                             <i class="small material-icons">search</i>
+                           </button>
+                           <button   onclick ="exportToExcel()" class="btn-floating btn-small blue">
+                              <i class="small material-icons">import_export</i>
+                            </button>
+                      </div>
+
+                <table id="page-table" class="highlight bordered centered responsive-table">
+                  <thead>
+                    <tr>
+                      <th> <i class="material-icons prefix noExl">date_range</i> <span> &nbsp;Date  </span> </div></th>
+                      <th> <i class="material-icons prefix noExl">style</i><span> &nbsp;Expense type </span></th>
+                      <th> <i class="material-icons prefix noExl">attach_money</i><span> Amount </span></th>
+                      <th> <i class="material-icons prefix noExl">local_shipping</i><span> &nbsp;Vendor </span></th>
+                      <th> <i class="material-icons prefix noExl">description</i><span> &nbsp;Notes</span> </th>
+                      <th> <i class="material-icons prefix noExl">speaker_notes</i><span> &nbsp;Actions </span></th>
+                    </tr>
+              </thead>
+
+              <tbody>
+
+
+                <% expenseList.forEach(function(expense){
+                    if(expense.type == "Weaving"){
+                  %>
+                  <tr>
+                    <td>
+                      <%= expense.date %>
+                    </td>
+                    <td>
+                      <%= expense.type %>
+                    </td>
+                    <td>
+                      <%= expense.amount %>
+                    </td>
+                    <td>
+                      <%= expense.vendor %>
+                    </td>
+                    <td>
+                      <%= expense.notes %>
+                    </td>
+                    <td class="noExl document-id">
+                      <%= expense._id%>
+                    </td>
+                    <td class="noExl" onclick="editExpenses(this)">
+                      <button class="btn-floating btn-small blue">
+                         <i class="small material-icons">mode_edit</i>
+                       </a>
+                    </td>
+                  </tr>
+                  <% } })%>
+
+
+
+              </tbody>
+              </table>
+
+            </div>
+          </div>
+          <script src="expense.js"></script>
+
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+</div>
+          <% include footer %>

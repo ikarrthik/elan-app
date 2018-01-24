@@ -1,0 +1,195 @@
+<% include header %>
+  <div class="container">
+
+    <h3> Bills</h3>
+
+<div class="card">
+    <table class="highlight bordered centered responsive-table">
+      <thead>
+        <tr>
+          <th> <i class="material-icons prefix">receipt</i> <span>&nbsp;Bill No </span> </div>
+  </th>
+  <th> <i class="material-icons prefix">local_shipping</i><span>&nbsp;&nbsp;Vendor </span></th>
+  <th> <i class="material-icons prefix">reorder</i><span>&nbsp; Order No </span></th>
+  <th> <i class="material-icons prefix">date_range</i> <span> &nbsp;Bill Date</span></th>
+  <th> <i class="material-icons prefix">date_range</i><span> &nbsp;Due Date </span></th>
+  <th> <i class="material-icons prefix">attach_money</i><span> &nbsp;Total</span> </th>
+  </tr>
+  </thead>
+
+  <tbody>
+
+
+    <% billList.forEach(function(bill){%>
+      <tr>
+        <td>
+          <%= bill.billNo %>
+        </td>
+        <td>
+          <%= bill.vendor %>
+        </td>
+        <td>
+          <%= bill.orderNo %>
+        </td>
+        <td>
+          <%= bill.billDate %>
+        </td>
+        <td>
+          <%= bill.dueDate %>
+        </td>
+        <td>
+          <%= bill.total %>
+        </td>
+
+      </tr>
+      <%})%>
+
+
+
+  </tbody>
+  </table>
+</div>
+  <!-- Modal Trigger -->
+  <a class="btn-floating waves-effect btn-large waves-light btn modal-trigger  red addButton" href="#modal1"><i class=" material-icons icon-size">add</i></a>
+
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal modal-fixed-footer">
+    <form id="itemForm" class="col s12" action="/addBill" method="POST">
+      <div class="modal-content">
+        <h4>Add a Bill</h4>
+        <div class="row">
+          <div class="row">
+            <div class="input-field col s6">
+              <i class="material-icons prefix">date_range</i>
+              <input id="billNo" name="billNo" type="text" class="validate">
+              <label for="billNo">Bill No</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">business_center</i>
+              <select id="vendor" name="vendor">
+                   <option value="" disabled selected>Choose your option</option>
+
+                   <% listOfVendors.forEach(function(vendors){%>
+                       <option value= <%= vendors %> > <%= vendors %></option>
+                     <%})%>
+
+                 </select>
+              <label for="vendor">Vendor</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">attach_money</i>
+              <input id="orderNo" required minlength="1" name="orderNo" type="text" class="validate">
+              <label for="orderNo">OrderNo</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">payment</i>
+              <input id="billDate" name="billDate" type="text" class="datepicker">
+              <label for="billDate">Bill Date</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">payment</i>
+              <input id="dueDate" name="dueDate" type="text" class="datepicker">
+              <label for="dueDate">Due Date</label>
+            </div>
+            <div class="input-field col s6">
+              <i class="material-icons prefix">description</i>
+              <input id="tax" name="tax" type="text" class="validate">
+              <label for="tax">Tax</label>
+            </div>
+            <div class=" itemTable input-field col s12">
+
+              <table class="bordered">
+                <thead>
+                  <tr>
+                    <th>Item Details</th>
+                    <th>Quantity</th>
+                    <th> &nbsp; &nbsp; &nbsp;Rate &nbsp; &nbsp;</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr class="form-group">
+                    <td>
+                      <div class="col s6">
+                        <input placeholder="Item name" name="item" id="item0" type="text">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col s4">
+                        <input placeholder="Qty" name="quantity" id="quantity0" type="text">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col s6">
+                        <input placeholder="rate" name="rate" id="rate0" type="text">
+                      </div>
+                    </td>
+                    <td>
+                      <span id="amount0" name="amount">0.00</span>
+                    </td>
+                  </tr>
+
+                  <tr class="form-group hide cloned" id="itemTemplate">
+                    <td>
+                      <div class="col s6">
+                        <input placeholder="Item name" name="cloneditem" id="item1" type="text">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col s4">
+                        <input placeholder="Qty" name="clonedquantity" id="quantity1" type="text">
+                      </div>
+                    </td>
+                    <td>
+                      <div class="col s6">
+                        <input placeholder="rate" name="clonedrate" id="rate1" type="text">
+                      </div>
+                    </td>
+                    <td>
+                      <span name="clonedamount" id="amount1">0.00</span>
+                    </td>
+                    <td>
+                      <div class="col s3">
+                        <button type="button" class="chip removeItem">Remove</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <a href="#" class="chip addItem">
+                    + Add another item
+                  </a>
+
+              <div class=" total input-field col s4">
+
+                <span id="total" name="total" type="text">Total </span>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+
+
+      </div>
+      <div class="modal-footer">
+        <button id="cancelId" class="modal-action modal-close waves-effect waves-green btn-flat">cancel
+        <i class="material-icons right">clear</i>
+      </button>
+
+        <button type="submit" id="vendorId" class="modal-action modal-close waves-effect waves-green btn-flat">Add Bill
+        <i class="material-icons right">send</i>
+      </button>
+      </div>
+    </form>
+
+  </div>
+
+
+  </div>
+
+  <script src="bills.js"></script>
+  <% include footer %>

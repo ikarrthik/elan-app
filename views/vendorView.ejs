@@ -1,0 +1,113 @@
+<% include header %>
+  <div class="container">
+
+    <h3>Vendors or Customers</h3>
+
+<div class="card">
+    <table class="highlight bordered centered responsive-table">
+      <thead>
+        <tr>
+          <th> <i class="material-icons prefix">local_shipping</i> <span> &nbsp; Company </span> </th>
+          <th> <i class="material-icons prefix">account_circle</i> <span> &nbsp; Contact Person</span></th>
+          <th> <i class="material-icons prefix">fiber_pin</i><span>  &nbsp; GstIN</span></th>
+          <th> <i class="material-icons prefix">location_city</i> <span> &nbsp; Address</span></th>
+          <th> <i class="material-icons prefix">phone</i> <span> &nbsp; Phone</span></th>
+          <th> <i class="material-icons prefix">description</i> <span> &nbsp; Remarks</span></th>
+
+        </tr>
+      </thead>
+
+      <tbody>
+
+
+        <% vendorList.forEach(function(vendor){%>
+          <tr>
+            <td>
+              <%= vendor.companyName %>
+            </td>
+            <td>
+              <%= vendor.contactperson %>
+            </td>
+            <td>
+              <%= vendor.gstIn %>
+            </td>
+            <td>
+              <%= vendor.address %>
+            </td>
+            <td>
+              <%= vendor.phone %>
+            </td>
+            <td>
+              <%= vendor.remarks %>
+            </td>
+          </tr>
+          <%})%>
+
+
+
+      </tbody>
+    </table>
+</div>
+    <!-- Modal Trigger -->
+    <a class="btn-floating waves-effect btn-large waves-light btn modal-trigger  red addButton" href="#modal1"><i class=" material-icons icon-size">add</i></a>
+
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal modal-fixed-footer">
+      <form class="col s12" action="/addVendor" method="POST">
+        <div class="modal-content">
+          <h4>Add an Vendor</h4>
+          <div class="row">
+            <div class="row">
+              <div class="input-field col s6">
+                <i class="material-icons prefix">local_shipping</i>
+                <input id="companyName" required minlength="2" name="companyName" type="text" class="validate">
+                <label for="companyName">Comapany Name</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">fiber_pin</i>
+                <input id="gstIn" required minlength="2" maxlength="15" name="gstIn" type="text" class="validate">
+                <label for="gstIn">GST IN/UN</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">account_circle</i>
+                <input id="contactperson" required minlength="4" name="contactperson" type="text" class="validate">
+                <label for="contactperson">Primary Contact</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">phone</i>
+                <input id="phone" data-error="wrong" data-success="right" name="phone" type="tel" class="validate">
+                <label for="phone">Phone</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">email</i>
+                <input id="email" data-error="wrong" data-success="right" name="email" type="email" class="validate">
+                <label for="email">Email</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">location_city</i>
+                <input id="address" name="address" type="text" class="validate">
+                <label for="address">Address</label>
+              </div>
+              <div class="input-field col s12">
+                <i class="material-icons prefix">description</i>
+                <input id="remarks" name="remarks" type="text" class="validate">
+                <label for="remarks">Remarks</label>
+              </div>
+
+            </div>
+          </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+          <a id="cancelId" class="modal-action modal-close waves-effect waves-green btn-flat">cancel</a>
+          <button type="submit" id="vendorId" class="modal-action modal-close waves-effect waves-green btn-flat">Add Vendor</button>
+        </div>
+      </form>
+
+    </div>
+
+
+  </div>
+  <% include footer %>

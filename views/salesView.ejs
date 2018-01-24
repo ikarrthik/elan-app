@@ -1,0 +1,264 @@
+<% include header %>
+
+  <div class="container">
+
+    <h3>Total Company Sales</h3>
+
+    <div class=" chart-wrapper col s6 m5 l6">
+      <div class="trending-bar-chart-wrapper">
+        <div class="card">
+
+          <canvas id="line-chart" height="400" width="400" style="display: block; width: 400px; height: 400px;"></canvas>
+        </div>
+        <div class="sales-card col s6 m4">
+          <div class="card-panel">
+            <div class="card-image">
+              <h4> <i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;Sales </h4>
+              <div>
+                <h3> <span class="saleCard"> 4000 &#8377;</span>
+                                        <i class="material-icons deep-orange-text text-accent-2">arrow_upward</i>
+                                      </h3>
+              </div>
+            </div>
+
+            <div class="input-field col s6">
+              <select id="card-select">
+                                          <option value="" disabled selected>Filter By Month</option>
+                                          <option value="0">January</option>
+                                          <option value="1">February</option>
+                                          <option value="2">March</option>
+                                          <option value="3">April</option>
+                                          <option value="4">May</option>
+                                          <option value="5">June</option>
+                                          <option value="6">July</option>
+                                          <option value="7">August</option>
+                                          <option value="8">September</option>
+                                          <option value="9">October</option>
+                                          <option value="10">November</option>
+                                          <option value="11">December</option>
+                                        </select>
+            </div>
+            <span class="black-text">
+                                     Total Sales for this month
+                                   </span>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+
+    <div class="row">
+      <div>
+        <div id="example"></div>
+      </div>
+            <div class=" card table-filter">
+                <div class="input-field col s3">
+
+                  <i class="material-icons prefix">event</i>
+                  <input id="startdate" name="startdate" type="text" class="datepicker">
+                  <label for="startdate">Start Date</label>
+                </div>
+                <div class="input-field col s3">
+
+                  <i class="material-icons prefix">event</i>
+                  <input id="enddate" name="enddate" type="text" class="datepicker">
+                  <label for="enddate">End Date</label>
+                </div>
+
+                <button  onclick ="searchMonthSales(this)" class="btn-floating btn-small blue">
+                   <i class="small material-icons">search</i>
+                 </button>
+                 <button   onclick ="exportToExcel()" class="btn-floating btn-small blue">
+                    <i class="small material-icons">import_export</i>
+                  </button>
+            </div>
+
+      <div class="card">
+
+        <table  id= "page-table" class="highlight bordered centered responsive-table">
+          <thead>
+            <tr>
+              <th> <i class="material-icons prefix noExl">date_range</i> <span>  Date </span> </th>
+              <th> <i class="material-icons prefix noExl">local_shipping</i> <span> Vendor</span></th>
+              <th> <i class="material-icons prefix noExl">style</i><span> Type</span></th>
+              <th> <i class="material-icons prefix noExl">credit_card</i> <span> Credit</span></th>
+              <th> <i class="material-icons prefix noExl">description</i> <span> Remarks</span></th>
+              <th class="noExl" > <i class="material-icons prefix noExl">call_to_action</i> <span> Actions</span></th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <% salesList.forEach(function(sale){%>
+              <tr>
+                <td>
+                  <%= sale.date %>
+                </td>
+                <td>
+                  <%= sale.vendor %>
+                </td>
+                <td>
+                  <%= sale.type %>
+                </td>
+                <td>
+                  <%= sale.credit %>
+                </td>
+                <td>
+                  <%= sale.remarks %>
+                </td>
+                <td class="document-id noExl">
+                  <%= sale._id%>
+                </td>
+                <td  class="noExl" onclick="editSale(this)">
+                  <button class="btn-floating btn-small blue">
+               <i class="small material-icons">mode_edit</i>
+             </button>
+                </td>
+          </tr>
+          <%})%>
+
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+    <!-- Modal Trigger -->
+    <a class="btn-floating waves-effect btn-large waves-light btn modal-trigger  red addButton" href="#modal1"><i class=" material-icons icon-size">add</i></a>
+
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal modal-fixed-footer">
+      <form class="col s12" action="/addSale" method="POST">
+        <div class="modal-content">
+          <h4>Add a Sale</h4>
+          <div class="row">
+            <div class="row">
+              <div class="input-field col s6">
+                <i class="material-icons prefix">event</i>
+                <input id="date" name="date" type="text" class="datepicker">
+                <label for="date">Date</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">local_shipping</i>
+                <select id="vendor" name="vendor">
+                     <option value="" disabled selected>Choose your option</option>
+
+                     <% listOfVendors.forEach(function(vendors){%>
+                         <option value= <%= vendors %> > <%= vendors %></option>
+                       <%})%>
+
+                   </select>
+                <label for="vendor">Vendor</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">style</i>
+                <input id="type" required minlength="2" name="type" type="text" class="validate">
+                <label for="type">Type</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">credit_card</i>
+                <input id="credit" required minlength="1" name="credit" type="text" class="validate">
+                <label for="credit">Credit</label>
+              </div>
+              <div class="input-field col s12">
+                <i class="material-icons prefix">description</i>
+                <input id="remarks" name="remarks" type="text" class="validate">
+                <label for="remarks">Remarks</label>
+              </div>
+
+              <div class="document-id">
+                <span id="documentId" />
+              </div>
+
+            </div>
+          </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+          <a id="cancelId" class="modal-action modal-close waves-effect waves-green btn-flat">cancel</a>
+          <button type="submit" id="vendorId" class="modal-action modal-close waves-effect waves-green btn-flat">Add Sale</button>
+      </div>
+      </form>
+
+    </div>
+
+
+
+    <div id="modal2" class="modal modal-fixed-footer">
+      <form class="col s12">
+        <div class="modal-content">
+          <h4>Update a Sale</h4>
+          <div class="row">
+            <div class="row">
+              <div class="input-field col s6">
+                <i class="material-icons prefix">event</i>
+                <input id="newdate" disabled value="I am not editable" name="date" type="text">
+                <label for="newdate">Date</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">local_shipping</i>
+                <select id="newvendor" name="vendor">
+                     <option value="" disabled selected>Choose your option</option>
+
+                     <% listOfVendors.forEach(function(vendors){%>
+                         <option value= <%= vendors %> > <%= vendors %></option>
+                       <%})%>
+
+                   </select>
+                <label for="vendor">Vendor</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">style</i>
+                <input id="newtype" placeholder="Placeholder" required minlength="2" name="type" type="text" class="validate">
+                <label for="type">Type</label>
+              </div>
+              <div class="input-field col s6">
+                <i class="material-icons prefix">credit_card</i>
+                <input id="newcredit" placeholder="Placeholder" required minlength="1" name="credit" type="text" class="validate">
+                <label for="credit">Credit</label>
+              </div>
+              <div class="input-field col s12">
+                <i class="material-icons prefix">description</i>
+                <input id="newremarks" placeholder="Placeholder" name="remarks" type="text" class="validate">
+                <label for="remarks">Remarks</label>
+              </div>
+
+              <div class="document-id">
+                <span id="documentId" />
+              </div>
+
+            </div>
+          </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+          <a id="cancelId2" class="modal-action modal-close waves-effect waves-green btn-flat">cancel</a>
+          <button type="button" onclick="updateSale()" id="vendorId" class="modal-action modal-close waves-effect waves-green btn-flat">Update Sale</button>
+          <button type="button" id="deleteVendor" onclick="deleteSale()" class="modal-action modal-close waves-effect waves-green btn-flat">Delete Sale</button>
+
+        </div>
+      </form>
+
+    </div>
+
+    <!-- End of the container-->
+  </div>
+
+  <script src="sales.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+
+
+  <% include footer %>
